@@ -196,3 +196,4 @@ MIT License - Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 3. Commiter vos changements
 4. Pusher vers la branche
 5. Créer une Pull Request
+# Force Render update
