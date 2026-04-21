@@ -1,6 +1,0 @@
-com/banking/controller/UserControllerIntegrationTest.class
-com/banking/controller/AccountControllerIntegrationTest.class
-com/banking/service/TransactionServiceTest.class
-com/banking/controller/TransactionControllerIntegrationTest.class
-com/banking/service/UserServiceTest.class
-com/banking/service/AccountServiceTest.class
