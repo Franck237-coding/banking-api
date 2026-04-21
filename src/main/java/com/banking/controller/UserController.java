@@ -1,5 +1,6 @@
 package com.banking.controller;
 
+import com.banking.dto.UserDTO;
 import com.banking.model.User;
 import com.banking.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,8 +32,15 @@ public class UserController {
         @ApiResponse(responseCode = "409", description = "Email déjà utilisé")
     })
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO dto) {
         try {
+            User user = new User();
+            user.setNom(dto.getNom());
+            user.setPrenom(dto.getPrenom());
+            user.setEmail(dto.getEmail());
+            user.setTelephone(dto.getTelephone());
+            user.setRole(User.Role.USER);
+            
             User createdUser = userService.createUser(user);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
@@ -63,9 +71,20 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @Parameter(description = "ID de l'utilisateur à mettre à jour") @PathVariable Long id,
-            @Valid @RequestBody User userDetails) {
+            @Valid @RequestBody UserDTO dto) {
         try {
-            User updatedUser = userService.updateUser(id, userDetails);
+            Optional<User> existingUser = userService.getUserById(id);
+            if (existingUser.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            User user = existingUser.get();
+            user.setNom(dto.getNom());
+            user.setPrenom(dto.getPrenom());
+            user.setEmail(dto.getEmail());
+            user.setTelephone(dto.getTelephone());
+            
+            User updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

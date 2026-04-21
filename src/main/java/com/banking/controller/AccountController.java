@@ -1,6 +1,9 @@
 package com.banking.controller;
 
+import com.banking.dto.AccountDTO;
 import com.banking.model.Account;
+import com.banking.model.User;
+import com.banking.repository.UserRepository;
 import com.banking.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +26,29 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     
+    @Autowired
+    private UserRepository userRepository;
+    
     @Operation(summary = "Créer un nouveau compte", description = "Crée un nouveau compte bancaire")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Compte créé avec succès"),
         @ApiResponse(responseCode = "400", description = "Données invalides"),
-        @ApiResponse(responseCode = "409", description = "Numéro de compte déjà utilisé")
+        @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
     })
     @PostMapping
-    public ResponseEntity<Account> createAccount(@Valid @RequestBody Account account) {
+    public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO dto) {
         try {
+            Optional<User> user = userRepository.findById(dto.getUserId());
+            if (user.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Account account = new Account();
+            account.setNumeroCompte(dto.getNumeroCompte());
+            account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));
+            account.setSolde(dto.getSolde());
+            account.setUser(user.get());
+            
             Account createdAccount = accountService.createAccount(account);
             return ResponseEntity.status(201).body(createdAccount);
         } catch (RuntimeException e) {
@@ -68,9 +84,18 @@ public class AccountController {
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAccount(
             @Parameter(description = "ID du compte à mettre à jour") @PathVariable Long id,
-            @Valid @RequestBody Account accountDetails) {
+            @Valid @RequestBody AccountDTO dto) {
         try {
-            Account updatedAccount = accountService.updateAccount(id, accountDetails);
+            Optional<Account> existingAccount = accountService.getAccountById(id);
+            if (existingAccount.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Account account = existingAccount.get();
+            account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));
+            account.setSolde(dto.getSolde());
+            
+            Account updatedAccount = accountService.updateAccount(id, account);
             return ResponseEntity.ok(updatedAccount);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
