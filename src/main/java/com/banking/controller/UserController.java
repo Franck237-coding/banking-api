@@ -50,27 +50,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
     
-    @Operation(summary = "Lister les utilisateurs simples", description = "Retourne uniquement la liste des utilisateurs (non-admins)")
-    @GetMapping("/simple")
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> users = userService.getUsers();
-        return ResponseEntity.ok(users);
-    }
-    
     @Operation(summary = "Récupérer un utilisateur par ID", description = "Retourne les détails d'un utilisateur spécifique")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
             @Parameter(description = "ID de l'utilisateur à récupérer") @PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok)
-                   .orElse(ResponseEntity.notFound().build());
-    }
-    
-    @Operation(summary = "Récupérer un utilisateur par email", description = "Retourne les détails d'un utilisateur via son email")
-    @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(
-            @Parameter(description = "Email de l'utilisateur à récupérer") @PathVariable String email) {
-        Optional<User> user = userService.getUserByEmail(email);
         return user.map(ResponseEntity::ok)
                    .orElse(ResponseEntity.notFound().build());
     }
@@ -98,21 +82,5 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
-    
-    @Operation(summary = "Rechercher par nom", description = "Recherche des utilisateurs par nom")
-    @GetMapping("/search/nom/{nom}")
-    public ResponseEntity<List<User>> searchByNom(
-            @Parameter(description = "Nom à rechercher") @PathVariable String nom) {
-        List<User> users = userService.searchUsersByName(nom);
-        return ResponseEntity.ok(users);
-    }
-    
-    @Operation(summary = "Rechercher par prénom", description = "Recherche des utilisateurs par prénom")
-    @GetMapping("/search/prenom/{prenom}")
-    public ResponseEntity<List<User>> searchByPrenom(
-            @Parameter(description = "Prénom à rechercher") @PathVariable String prenom) {
-        List<User> users = userService.searchUsersByPrenom(prenom);
-        return ResponseEntity.ok(users);
     }
 }

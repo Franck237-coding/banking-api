@@ -56,15 +56,6 @@ public class AccountController {
                       .orElse(ResponseEntity.notFound().build());
     }
     
-    @Operation(summary = "Récupérer un compte par numéro", description = "Retourne les détails d'un compte via son numéro")
-    @GetMapping("/numero/{numeroCompte}")
-    public ResponseEntity<Account> getAccountByNumero(
-            @Parameter(description = "Numéro du compte à récupérer") @PathVariable String numeroCompte) {
-        Optional<Account> account = accountService.getAccountByNumeroCompte(numeroCompte);
-        return account.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
-    }
-    
     @Operation(summary = "Lister les comptes d'un utilisateur", description = "Retourne tous les comptes d'un utilisateur spécifique")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Account>> getAccountsByUser(
@@ -95,32 +86,6 @@ public class AccountController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
-        }
-    }
-    
-    @Operation(summary = "Effectuer un dépôt", description = "Dépose de l'argent sur un compte")
-    @PostMapping("/deposit")
-    public ResponseEntity<String> deposit(
-            @Parameter(description = "Numéro du compte") @RequestParam String numeroCompte,
-            @Parameter(description = "Montant à déposer") @RequestParam BigDecimal montant) {
-        boolean success = accountService.deposit(numeroCompte, montant);
-        if (success) {
-            return ResponseEntity.ok("Dépôt effectué avec succès");
-        } else {
-            return ResponseEntity.badRequest().body("Échec du dépôt - compte non trouvé");
-        }
-    }
-    
-    @Operation(summary = "Effectuer un retrait", description = "Retire de l'argent d'un compte")
-    @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(
-            @Parameter(description = "Numéro du compte") @RequestParam String numeroCompte,
-            @Parameter(description = "Montant à retirer") @RequestParam BigDecimal montant) {
-        boolean success = accountService.withdraw(numeroCompte, montant);
-        if (success) {
-            return ResponseEntity.ok("Retrait effectué avec succès");
-        } else {
-            return ResponseEntity.badRequest().body("Échec du retrait - compte non trouvé ou solde insuffisant");
         }
     }
 }

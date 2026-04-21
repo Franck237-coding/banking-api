@@ -27,16 +27,8 @@ public class UserService {
         return userRepository.findAll();
     }
     
-    public List<User> getUsers() {
-        return userRepository.findUsers();
-    }
-    
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
-    }
-    
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
     
     public User updateUser(Long id, User userDetails) {
@@ -61,13 +53,5 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'ID: " + id));
         userRepository.delete(user);
-    }
-    
-    public List<User> searchUsersByName(String nom) {
-        return userRepository.findByNomContainingIgnoreCase(nom);
-    }
-    
-    public List<User> searchUsersByPrenom(String prenom) {
-        return userRepository.findByPrenomContainingIgnoreCase(prenom);
     }
 }
