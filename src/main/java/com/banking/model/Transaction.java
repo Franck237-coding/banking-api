@@ -1,5 +1,6 @@
 package com.banking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +41,12 @@ public class Transaction {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "compte_source_id")
+    @JsonIgnoreProperties({"transactionsSource", "transactionsDestination", "hibernateLazyInitializer", "handler"})
     private Account compteSource;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "compte_destination_id")
+    @JsonIgnoreProperties({"transactionsSource", "transactionsDestination", "hibernateLazyInitializer", "handler"})
     private Account compteDestination;
     
     public enum TypeTransaction {
@@ -62,7 +66,6 @@ public class Transaction {
         this.description = description;
     }
     
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
