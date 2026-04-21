@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Account.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.model</a> &gt; <span class="el_source">Account.java</span></div><h1>Account.java</h1><pre class="source lang-java linenums">package com.banking.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;accounts&quot;)
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotBlank(message = &quot;Le numéro de compte est obligatoire&quot;)
+    @Column(unique = true, nullable = false)
+    private String numeroCompte;
+    
+<span class="pc" id="L21">    @NotNull(message = &quot;Le solde est obligatoire&quot;)</span>
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal solde = BigDecimal.ZERO;
+    
+<span class="pc" id="L25">    @Enumerated(EnumType.STRING)</span>
+    @Column(nullable = false)
+    private TypeCompte typeCompte = TypeCompte.COURANT;
+    
+<span class="pc" id="L29">    @Column(nullable = false)</span>
+<span class="pc" id="L30">    private LocalDateTime dateCreation = LocalDateTime.now();</span>
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+    private User user;
+    
+    @OneToMany(mappedBy = &quot;compteSource&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List&lt;Transaction&gt; transactionsSource;
+    
+    @OneToMany(mappedBy = &quot;compteDestination&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List&lt;Transaction&gt; transactionsDestination;
+    
+<span class="fc" id="L42">    public enum TypeCompte {</span>
+<span class="fc" id="L43">        COURANT, EPARGNE, LIVRET_A</span>
+    }
+    
+<span class="fc" id="L46">    public Account() {}</span>
+    
+<span class="nc" id="L48">    public Account(String numeroCompte, User user) {</span>
+<span class="nc" id="L49">        this.numeroCompte = numeroCompte;</span>
+<span class="nc" id="L50">        this.user = user;</span>
+<span class="nc" id="L51">    }</span>
+    
+    // Getters and Setters
+<span class="fc" id="L54">    public Long getId() { return id; }</span>
+<span class="fc" id="L55">    public void setId(Long id) { this.id = id; }</span>
+    
+<span class="fc" id="L57">    public String getNumeroCompte() { return numeroCompte; }</span>
+<span class="fc" id="L58">    public void setNumeroCompte(String numeroCompte) { this.numeroCompte = numeroCompte; }</span>
+    
+<span class="fc" id="L60">    public BigDecimal getSolde() { return solde; }</span>
+<span class="fc" id="L61">    public void setSolde(BigDecimal solde) { this.solde = solde; }</span>
+    
+<span class="fc" id="L63">    public TypeCompte getTypeCompte() { return typeCompte; }</span>
+<span class="fc" id="L64">    public void setTypeCompte(TypeCompte typeCompte) { this.typeCompte = typeCompte; }</span>
+    
+<span class="fc" id="L66">    public LocalDateTime getDateCreation() { return dateCreation; }</span>
+<span class="fc" id="L67">    public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }</span>
+    
+<span class="fc" id="L69">    public User getUser() { return user; }</span>
+<span class="fc" id="L70">    public void setUser(User user) { this.user = user; }</span>
+    
+<span class="fc" id="L72">    public List&lt;Transaction&gt; getTransactionsSource() { return transactionsSource; }</span>
+<span class="fc" id="L73">    public void setTransactionsSource(List&lt;Transaction&gt; transactionsSource) { this.transactionsSource = transactionsSource; }</span>
+    
+<span class="fc" id="L75">    public List&lt;Transaction&gt; getTransactionsDestination() { return transactionsDestination; }</span>
+<span class="fc" id="L76">    public void setTransactionsDestination(List&lt;Transaction&gt; transactionsDestination) { this.transactionsDestination = transactionsDestination; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

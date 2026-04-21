@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.dto</a> &gt; <span class="el_source">AccountDTO.java</span></div><h1>AccountDTO.java</h1><pre class="source lang-java linenums">package com.banking.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+
+public class AccountDTO {
+    
+    @NotBlank(message = &quot;Le numéro de compte est obligatoire&quot;)
+    private String numeroCompte;
+    
+<span class="nc" id="L12">    @NotNull(message = &quot;Le solde est obligatoire&quot;)</span>
+    private BigDecimal solde = BigDecimal.ZERO;
+    
+<span class="nc" id="L15">    @NotBlank(message = &quot;Le type de compte est obligatoire&quot;)</span>
+    private String typeCompte = &quot;COURANT&quot;;
+    
+    @NotNull(message = &quot;L'ID utilisateur est obligatoire&quot;)
+    private Long userId;
+    
+<span class="nc" id="L21">    public AccountDTO() {}</span>
+    
+<span class="nc" id="L23">    public AccountDTO(String numeroCompte, BigDecimal solde, String typeCompte, Long userId) {</span>
+<span class="nc" id="L24">        this.numeroCompte = numeroCompte;</span>
+<span class="nc" id="L25">        this.solde = solde;</span>
+<span class="nc" id="L26">        this.typeCompte = typeCompte;</span>
+<span class="nc" id="L27">        this.userId = userId;</span>
+<span class="nc" id="L28">    }</span>
+    
+    // Getters and Setters
+<span class="nc" id="L31">    public String getNumeroCompte() { return numeroCompte; }</span>
+<span class="nc" id="L32">    public void setNumeroCompte(String numeroCompte) { this.numeroCompte = numeroCompte; }</span>
+    
+<span class="nc" id="L34">    public BigDecimal getSolde() { return solde; }</span>
+<span class="nc" id="L35">    public void setSolde(BigDecimal solde) { this.solde = solde; }</span>
+    
+<span class="nc" id="L37">    public String getTypeCompte() { return typeCompte; }</span>
+<span class="nc" id="L38">    public void setTypeCompte(String typeCompte) { this.typeCompte = typeCompte; }</span>
+    
+<span class="nc" id="L40">    public Long getUserId() { return userId; }</span>
+<span class="nc" id="L41">    public void setUserId(Long userId) { this.userId = userId; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
