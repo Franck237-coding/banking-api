@@ -140,7 +140,21 @@ class ApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("IT-06: Lister les comptes via Swagger")
+    @DisplayName("IT-06: Créer un compte avec mauvaise banque via Swagger")
+    void testCreerCompteMauvaiseBanque() throws Exception {
+        Bank otherBank = new Bank();
+        otherBank.setNom("Autre Banque");
+        otherBank.setCode("BNK002");
+        otherBank = bankRepository.save(otherBank);
+        
+        mockMvc.perform(post("/api/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"numeroCompte\":\"BANK987654321\",\"solde\":500.00,\"typeCompte\":\"COURANT\",\"userId\":" + user.getId() + ",\"bankId\":" + otherBank.getId() + "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("IT-07: Lister les comptes via Swagger")
     void testListerComptes() throws Exception {
         mockMvc.perform(get("/api/accounts"))
                 .andExpect(status().isOk())
@@ -152,7 +166,7 @@ class ApiIntegrationTest {
     // ===============================
 
     @Test
-    @DisplayName("IT-07: Effectuer un dépôt via Swagger")
+    @DisplayName("IT-08: Effectuer un dépôt via Swagger")
     void testDepot() throws Exception {
         mockMvc.perform(post("/api/transactions/deposit")
                 .param("numeroCompte", "BANK123456789")
@@ -164,7 +178,7 @@ class ApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("IT-08: Effectuer un retrait via Swagger")
+    @DisplayName("IT-09: Effectuer un retrait via Swagger")
     void testRetrait() throws Exception {
         mockMvc.perform(post("/api/transactions/withdraw")
                 .param("numeroCompte", "BANK123456789")
@@ -176,7 +190,7 @@ class ApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("IT-09: Retrait avec solde insuffisant via Swagger")
+    @DisplayName("IT-10: Retrait avec solde insuffisant via Swagger")
     void testRetraitSoldeInsuffisant() throws Exception {
         mockMvc.perform(post("/api/transactions/withdraw")
                 .param("numeroCompte", "BANK123456789")

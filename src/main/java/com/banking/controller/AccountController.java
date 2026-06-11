@@ -34,7 +34,7 @@ public class AccountController {
     @Autowired
     private BankRepository bankRepository;
     
-    @Operation(summary = "Créer un nouveau compte", description = "Crée un nouveau compte bancaire")
+    @Operation(summary = "Créer un nouveau compte", description = "Crée un nouveau compte bancaire dans une banque spécifique")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Compte créé avec succès"),
         @ApiResponse(responseCode = "400", description = "Données invalides"),
@@ -48,6 +48,10 @@ public class AccountController {
             
             if (user.isEmpty() || bank.isEmpty()) {
                 return ResponseEntity.notFound().build();
+            }
+            
+            if (!user.get().getBank().getId().equals(bank.get().getId())) {
+                throw new RuntimeException("L'utilisateur n'appartient pas à cette banque");
             }
             
             Account account = new Account();
