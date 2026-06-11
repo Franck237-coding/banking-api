@@ -59,6 +59,10 @@ public class BankService {
         return bankRepository.save(bank);
     }
 
+    private void existsByNom(String string) {
+        // TODO
+    }
+
     public void deleteBank(Long id) {
         Bank bank = bankRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Banque non trouvée avec l'ID: " + id));
