@@ -1,3 +1,4 @@
+/home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/repository/BankRepository.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/service/TransactionService.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/dto/TransactionDTO.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/repository/UserRepository.java
@@ -6,13 +7,17 @@
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/model/User.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/service/AccountService.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/BankingApiApplication.java
+/home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/service/BankService.java
+/home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/controller/BankController.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/controller/TransactionController.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/config/OpenApiConfig.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/repository/AccountRepository.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/dto/AccountDTO.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/controller/UserController.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/model/Account.java
+/home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/dto/BankDTO.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/repository/TransactionRepository.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/service/UserService.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/dto/UserDTO.java
+/home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/model/Bank.java
 /home/franck-m/Documents/L3/S2/INF352/banking-api/src/main/java/com/banking/model/Transaction.java

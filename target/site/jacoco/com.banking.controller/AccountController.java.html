@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.controller</a> &gt; <span class="el_source">AccountController.java</span></div><h1>AccountController.java</h1><pre class="source lang-java linenums">package com.banking.controller;
+
+import com.banking.dto.AccountDTO;
+import com.banking.model.Account;
+import com.banking.model.Bank;
+import com.banking.model.User;
+import com.banking.repository.BankRepository;
+import com.banking.repository.UserRepository;
+import com.banking.service.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/accounts&quot;)
+@Tag(name = &quot;Gestion des Comptes&quot;, description = &quot;API pour la gestion des comptes bancaires&quot;)
+<span class="nc" id="L26">public class AccountController {</span>
+    
+    @Autowired
+    private AccountService accountService;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private BankRepository bankRepository;
+    
+    @Operation(summary = &quot;Créer un nouveau compte&quot;, description = &quot;Crée un nouveau compte bancaire&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Compte créé avec succès&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Données invalides&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Utilisateur ou banque non trouvé&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;Account&gt; createAccount(@Valid @RequestBody AccountDTO dto) {
+        try {
+<span class="nc" id="L46">            Optional&lt;User&gt; user = userRepository.findById(dto.getUserId());</span>
+<span class="nc" id="L47">            Optional&lt;Bank&gt; bank = bankRepository.findById(dto.getBankId());</span>
+            
+<span class="nc bnc" id="L49" title="All 4 branches missed.">            if (user.isEmpty() || bank.isEmpty()) {</span>
+<span class="nc" id="L50">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L53">            Account account = new Account();</span>
+<span class="nc" id="L54">            account.setNumeroCompte(dto.getNumeroCompte());</span>
+<span class="nc" id="L55">            account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));</span>
+<span class="nc" id="L56">            account.setSolde(dto.getSolde());</span>
+<span class="nc" id="L57">            account.setUser(user.get());</span>
+<span class="nc" id="L58">            account.setBank(bank.get());</span>
+            
+<span class="nc" id="L60">            Account createdAccount = accountService.createAccount(account);</span>
+<span class="nc" id="L61">            return ResponseEntity.status(201).body(createdAccount);</span>
+<span class="nc" id="L62">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L63">            return ResponseEntity.badRequest().build();</span>
+        }
+    }
+    
+    @Operation(summary = &quot;Lister tous les comptes&quot;, description = &quot;Retourne la liste de tous les comptes bancaires&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Account&gt;&gt; getAllAccounts() {
+<span class="nc" id="L70">        List&lt;Account&gt; accounts = accountService.getAllAccounts();</span>
+<span class="nc" id="L71">        return ResponseEntity.ok(accounts);</span>
+    }
+    
+    @Operation(summary = &quot;Récupérer un compte par ID&quot;, description = &quot;Retourne les détails d'un compte spécifique&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Account&gt; getAccountById(
+            @Parameter(description = &quot;ID du compte à récupérer&quot;) @PathVariable Long id) {
+<span class="nc" id="L78">        Optional&lt;Account&gt; account = accountService.getAccountById(id);</span>
+<span class="nc" id="L79">        return account.map(ResponseEntity::ok)</span>
+<span class="nc" id="L80">                      .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @Operation(summary = &quot;Lister les comptes d'un utilisateur&quot;, description = &quot;Retourne tous les comptes d'un utilisateur spécifique&quot;)
+    @GetMapping(&quot;/user/{userId}&quot;)
+    public ResponseEntity&lt;List&lt;Account&gt;&gt; getAccountsByUser(
+            @Parameter(description = &quot;ID de l'utilisateur&quot;) @PathVariable Long userId) {
+<span class="nc" id="L87">        List&lt;Account&gt; accounts = accountService.getAccountsByUserId(userId);</span>
+<span class="nc" id="L88">        return ResponseEntity.ok(accounts);</span>
+    }
+    
+    @Operation(summary = &quot;Mettre à jour un compte&quot;, description = &quot;Met à jour les informations d'un compte&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Account&gt; updateAccount(
+            @Parameter(description = &quot;ID du compte à mettre à jour&quot;) @PathVariable Long id,
+            @Valid @RequestBody AccountDTO dto) {
+        try {
+<span class="nc" id="L97">            Optional&lt;Account&gt; existingAccount = accountService.getAccountById(id);</span>
+<span class="nc" id="L98">            Optional&lt;Bank&gt; bank = bankRepository.findById(dto.getBankId());</span>
+            
+<span class="nc bnc" id="L100" title="All 4 branches missed.">            if (existingAccount.isEmpty() || bank.isEmpty()) {</span>
+<span class="nc" id="L101">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L104">            Account account = existingAccount.get();</span>
+<span class="nc" id="L105">            account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));</span>
+<span class="nc" id="L106">            account.setSolde(dto.getSolde());</span>
+<span class="nc" id="L107">            account.setBank(bank.get());</span>
+            
+<span class="nc" id="L109">            Account updatedAccount = accountService.updateAccount(id, account);</span>
+<span class="nc" id="L110">            return ResponseEntity.ok(updatedAccount);</span>
+<span class="nc" id="L111">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L112">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+    
+    @Operation(summary = &quot;Supprimer un compte&quot;, description = &quot;Supprime un compte bancaire&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteAccount(
+            @Parameter(description = &quot;ID du compte à supprimer&quot;) @PathVariable Long id) {
+        try {
+<span class="nc" id="L121">            accountService.deleteAccount(id);</span>
+<span class="nc" id="L122">            return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L123">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L124">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

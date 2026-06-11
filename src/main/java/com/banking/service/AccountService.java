@@ -56,6 +56,7 @@ public class AccountService {
         
         account.setTypeCompte(accountDetails.getTypeCompte());
         account.setSolde(accountDetails.getSolde());
+        account.setBank(accountDetails.getBank());
         
         return accountRepository.save(account);
     }

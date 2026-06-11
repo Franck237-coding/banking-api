@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.banking.model.Account;
+import com.banking.model.Bank;
 import com.banking.model.Transaction;
 import com.banking.repository.AccountRepository;
 import com.banking.repository.TransactionRepository;
@@ -32,17 +33,22 @@ class TransactionServiceTest {
     private AccountRepository accountRepository;
 
     private Account testAccount;
+    private Bank testBank;
 
     @BeforeEach
     void setUp() {
+        testBank = new Bank();
+        testBank.setId(1L);
+        testBank.setNom("Banque Nationale");
+        testBank.setCode("BNK001");
+
         testAccount = new Account();
         testAccount.setId(1L);
         testAccount.setNumeroCompte("BANK123456789");
         testAccount.setSolde(new BigDecimal("1000.00"));
         testAccount.setTypeCompte(Account.TypeCompte.COURANT);
+        testAccount.setBank(testBank);
     }
-
-    // ─── Tests depot (partitionnement classes equivalence) ───
 
     @Test
     @DisplayName("TC-01: Depot valide")
@@ -62,8 +68,6 @@ class TransactionServiceTest {
         assertThrows(RuntimeException.class, () -> 
             transactionService.effectuerDepot("INVALID", new BigDecimal("500.00"), "Test"));
     }
-
-    // ─── Tests retrait (valeurs limites) ───
 
     @Test
     @DisplayName("TC-03: Retrait montant valide")
@@ -91,8 +95,6 @@ class TransactionServiceTest {
         assertThrows(RuntimeException.class, () -> 
             transactionService.effectuerRetrait("INVALID", new BigDecimal("500.00"), "Test"));
     }
-
-    // ─── Tests recherche transaction ───
 
     @Test
     @DisplayName("TC-06: Transaction trouvee par ID")

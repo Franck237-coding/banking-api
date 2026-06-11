@@ -1,7 +1,9 @@
 package com.banking.controller;
 
 import com.banking.dto.UserDTO;
+import com.banking.model.Bank;
 import com.banking.model.User;
+import com.banking.service.BankService;
 import com.banking.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +27,9 @@ public class UserController {
     @Autowired
     private UserService userService;
     
+    @Autowired
+    private BankService bankService;
+    
     @Operation(summary = "Ajouter un nouvel utilisateur", description = "Crée un nouvel utilisateur dans le système")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Utilisateur créé avec succès"),
@@ -40,6 +45,13 @@ public class UserController {
             user.setEmail(dto.getEmail());
             user.setTelephone(dto.getTelephone());
             user.setRole(User.Role.USER);
+            
+            if (dto.getBankId() != null) {
+                Optional<Bank> bank = bankService.getBankById(dto.getBankId());
+                if (bank.isPresent()) {
+                    user.setBank(bank.get());
+                }
+            }
             
             User createdUser = userService.createUser(user);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
@@ -83,6 +95,13 @@ public class UserController {
             user.setPrenom(dto.getPrenom());
             user.setEmail(dto.getEmail());
             user.setTelephone(dto.getTelephone());
+            
+            if (dto.getBankId() != null) {
+                Optional<Bank> bank = bankService.getBankById(dto.getBankId());
+                if (bank.isPresent()) {
+                    user.setBank(bank.get());
+                }
+            }
             
             User updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(updatedUser);

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BankController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.controller</a> &gt; <span class="el_source">BankController.java</span></div><h1>BankController.java</h1><pre class="source lang-java linenums">package com.banking.controller;
+
+import com.banking.dto.BankDTO;
+import com.banking.model.Bank;
+import com.banking.service.BankService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/banks&quot;)
+@Tag(name = &quot;Gestion des Banques&quot;, description = &quot;API pour la gestion des banques&quot;)
+<span class="nc" id="L23">public class BankController {</span>
+    
+    @Autowired
+    private BankService bankService;
+    
+    @Operation(summary = &quot;Créer une banque&quot;, description = &quot;Crée une nouvelle banque&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Banque créée avec succès&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Données invalides&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;Bank&gt; createBank(@Valid @RequestBody BankDTO dto) {
+        try {
+<span class="nc" id="L36">            Bank bank = new Bank();</span>
+<span class="nc" id="L37">            bank.setNom(dto.getNom());</span>
+<span class="nc" id="L38">            bank.setCode(dto.getCode());</span>
+<span class="nc" id="L39">            bank.setAdresse(dto.getAdresse());</span>
+<span class="nc" id="L40">            bank.setTelephone(dto.getTelephone());</span>
+            
+<span class="nc" id="L42">            Bank createdBank = bankService.createBank(bank);</span>
+<span class="nc" id="L43">            return new ResponseEntity&lt;&gt;(createdBank, HttpStatus.CREATED);</span>
+<span class="nc" id="L44">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L45">            return new ResponseEntity&lt;&gt;(null, HttpStatus.BAD_REQUEST);</span>
+        }
+    }
+    
+    @Operation(summary = &quot;Lister toutes les banques&quot;, description = &quot;Retourne la liste de toutes les banques&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Bank&gt;&gt; getAllBanks() {
+<span class="nc" id="L52">        List&lt;Bank&gt; banks = bankService.getAllBanks();</span>
+<span class="nc" id="L53">        return ResponseEntity.ok(banks);</span>
+    }
+    
+    @Operation(summary = &quot;Récupérer une banque par ID&quot;, description = &quot;Retourne une banque spécifique&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Bank&gt; getBankById(
+            @Parameter(description = &quot;ID de la banque&quot;) @PathVariable Long id) {
+<span class="nc" id="L60">        Optional&lt;Bank&gt; bank = bankService.getBankById(id);</span>
+<span class="nc" id="L61">        return bank.map(ResponseEntity::ok)</span>
+<span class="nc" id="L62">                   .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @Operation(summary = &quot;Récupérer une banque par code&quot;, description = &quot;Retourne une banque par son code&quot;)
+    @GetMapping(&quot;/code/{code}&quot;)
+    public ResponseEntity&lt;Bank&gt; getBankByCode(
+            @Parameter(description = &quot;Code de la banque&quot;) @PathVariable String code) {
+<span class="nc" id="L69">        Optional&lt;Bank&gt; bank = bankService.getBankByCode(code);</span>
+<span class="nc" id="L70">        return bank.map(ResponseEntity::ok)</span>
+<span class="nc" id="L71">                   .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @Operation(summary = &quot;Mettre à jour une banque&quot;, description = &quot;Met à jour une banque existante&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Bank&gt; updateBank(
+            @Parameter(description = &quot;ID de la banque&quot;) @PathVariable Long id,
+            @Valid @RequestBody BankDTO dto) {
+        try {
+<span class="nc" id="L80">            Bank bank = new Bank();</span>
+<span class="nc" id="L81">            bank.setNom(dto.getNom());</span>
+<span class="nc" id="L82">            bank.setCode(dto.getCode());</span>
+<span class="nc" id="L83">            bank.setAdresse(dto.getAdresse());</span>
+<span class="nc" id="L84">            bank.setTelephone(dto.getTelephone());</span>
+            
+<span class="nc" id="L86">            Bank updatedBank = bankService.updateBank(id, bank);</span>
+<span class="nc" id="L87">            return ResponseEntity.ok(updatedBank);</span>
+<span class="nc" id="L88">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L89">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+    
+    @Operation(summary = &quot;Supprimer une banque&quot;, description = &quot;Supprime une banque&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteBank(
+            @Parameter(description = &quot;ID de la banque&quot;) @PathVariable Long id) {
+        try {
+<span class="nc" id="L98">            bankService.deleteBank(id);</span>
+<span class="nc" id="L99">            return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L100">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L101">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

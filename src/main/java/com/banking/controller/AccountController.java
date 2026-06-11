@@ -2,7 +2,9 @@ package com.banking.controller;
 
 import com.banking.dto.AccountDTO;
 import com.banking.model.Account;
+import com.banking.model.Bank;
 import com.banking.model.User;
+import com.banking.repository.BankRepository;
 import com.banking.repository.UserRepository;
 import com.banking.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,17 +31,22 @@ public class AccountController {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private BankRepository bankRepository;
+    
     @Operation(summary = "Créer un nouveau compte", description = "Crée un nouveau compte bancaire")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Compte créé avec succès"),
         @ApiResponse(responseCode = "400", description = "Données invalides"),
-        @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
+        @ApiResponse(responseCode = "404", description = "Utilisateur ou banque non trouvé")
     })
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO dto) {
         try {
             Optional<User> user = userRepository.findById(dto.getUserId());
-            if (user.isEmpty()) {
+            Optional<Bank> bank = bankRepository.findById(dto.getBankId());
+            
+            if (user.isEmpty() || bank.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             
@@ -48,6 +55,7 @@ public class AccountController {
             account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));
             account.setSolde(dto.getSolde());
             account.setUser(user.get());
+            account.setBank(bank.get());
             
             Account createdAccount = accountService.createAccount(account);
             return ResponseEntity.status(201).body(createdAccount);
@@ -87,13 +95,16 @@ public class AccountController {
             @Valid @RequestBody AccountDTO dto) {
         try {
             Optional<Account> existingAccount = accountService.getAccountById(id);
-            if (existingAccount.isEmpty()) {
+            Optional<Bank> bank = bankRepository.findById(dto.getBankId());
+            
+            if (existingAccount.isEmpty() || bank.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             
             Account account = existingAccount.get();
             account.setTypeCompte(Account.TypeCompte.valueOf(dto.getTypeCompte()));
             account.setSolde(dto.getSolde());
+            account.setBank(bank.get());
             
             Account updatedAccount = accountService.updateAccount(id, account);
             return ResponseEntity.ok(updatedAccount);

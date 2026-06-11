@@ -42,6 +42,11 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime dateCreation = LocalDateTime.now();
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_id")
+    @JsonIgnoreProperties({"users", "hibernateLazyInitializer", "handler"})
+    private Bank bank;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("user")
     private List<Account> accounts;
@@ -77,9 +82,12 @@ public class User {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
     
-    public LocalDateTime getDateCreation() { return dateCreation; }
+public LocalDateTime getDateCreation() { return dateCreation; }
     public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
-    
+
+    public Bank getBank() { return bank; }
+    public void setBank(Bank bank) { this.bank = bank; }
+
     public List<Account> getAccounts() { return accounts; }
     public void setAccounts(List<Account> accounts) { this.accounts = accounts; }
 }

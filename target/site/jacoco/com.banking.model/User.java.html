@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.model</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.banking.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;users&quot;)
+@JsonIgnoreProperties({&quot;accounts&quot;, &quot;hibernateLazyInitializer&quot;, &quot;handler&quot;})
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotBlank(message = &quot;Le nom est obligatoire&quot;)
+    @Size(min = 2, max = 50, message = &quot;Le nom doit contenir entre 2 et 50 caractères&quot;)
+    @Column(nullable = false)
+    private String nom;
+    
+    @NotBlank(message = &quot;Le prénom est obligatoire&quot;)
+    @Size(min = 2, max = 50, message = &quot;Le prénom doit contenir entre 2 et 50 caractères&quot;)
+    @Column(nullable = false)
+    private String prenom;
+    
+    @Email(message = &quot;L'email doit être valide&quot;)
+    @NotBlank(message = &quot;L'email est obligatoire&quot;)
+    @Column(unique = true, nullable = false)
+    private String email;
+    
+    @NotBlank(message = &quot;Le téléphone est obligatoire&quot;)
+    @Column(nullable = false)
+    private String telephone;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+<span class="pc" id="L40">    private Role role = Role.USER;</span>
+    
+    @Column(nullable = false)
+<span class="pc" id="L43">    private LocalDateTime dateCreation = LocalDateTime.now();</span>
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;bank_id&quot;)
+    @JsonIgnoreProperties({&quot;users&quot;, &quot;hibernateLazyInitializer&quot;, &quot;handler&quot;})
+    private Bank bank;
+
+    @OneToMany(mappedBy = &quot;user&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(&quot;user&quot;)
+    private List&lt;Account&gt; accounts;
+    
+<span class="fc" id="L54">    public User() {}</span>
+    
+<span class="nc" id="L56">    public User(String nom, String prenom, String email, String telephone) {</span>
+<span class="nc" id="L57">        this.nom = nom;</span>
+<span class="nc" id="L58">        this.prenom = prenom;</span>
+<span class="nc" id="L59">        this.email = email;</span>
+<span class="nc" id="L60">        this.telephone = telephone;</span>
+<span class="nc" id="L61">    }</span>
+    
+<span class="fc" id="L63">    public enum Role {</span>
+<span class="fc" id="L64">        USER, ADMIN</span>
+    }
+    
+<span class="nc" id="L67">    public Long getId() { return id; }</span>
+<span class="fc" id="L68">    public void setId(Long id) { this.id = id; }</span>
+    
+<span class="fc" id="L70">    public String getNom() { return nom; }</span>
+<span class="fc" id="L71">    public void setNom(String nom) { this.nom = nom; }</span>
+    
+<span class="fc" id="L73">    public String getPrenom() { return prenom; }</span>
+<span class="fc" id="L74">    public void setPrenom(String prenom) { this.prenom = prenom; }</span>
+    
+<span class="fc" id="L76">    public String getEmail() { return email; }</span>
+<span class="fc" id="L77">    public void setEmail(String email) { this.email = email; }</span>
+    
+<span class="fc" id="L79">    public String getTelephone() { return telephone; }</span>
+<span class="fc" id="L80">    public void setTelephone(String telephone) { this.telephone = telephone; }</span>
+    
+<span class="fc" id="L82">    public Role getRole() { return role; }</span>
+<span class="fc" id="L83">    public void setRole(Role role) { this.role = role; }</span>
+    
+<span class="nc" id="L85">public LocalDateTime getDateCreation() { return dateCreation; }</span>
+<span class="nc" id="L86">    public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }</span>
+
+<span class="fc" id="L88">    public Bank getBank() { return bank; }</span>
+<span class="fc" id="L89">    public void setBank(Bank bank) { this.bank = bank; }</span>
+
+<span class="nc" id="L91">    public List&lt;Account&gt; getAccounts() { return accounts; }</span>
+<span class="nc" id="L92">    public void setAccounts(List&lt;Account&gt; accounts) { this.accounts = accounts; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

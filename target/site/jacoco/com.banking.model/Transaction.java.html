@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Transaction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking-api</a> &gt; <a href="index.source.html" class="el_package">com.banking.model</a> &gt; <span class="el_source">Transaction.java</span></div><h1>Transaction.java</h1><pre class="source lang-java linenums">package com.banking.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = &quot;transactions&quot;)
+@JsonIgnoreProperties({&quot;hibernateLazyInitializer&quot;, &quot;handler&quot;})
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotBlank(message = &quot;La référence est obligatoire&quot;)
+    @Column(unique = true, nullable = false)
+    private String reference;
+    
+    @NotNull(message = &quot;Le montant est obligatoire&quot;)
+    @Positive(message = &quot;Le montant doit être positif&quot;)
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal montant;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TypeTransaction typeTransaction;
+    
+    @Column(length = 500)
+    private String description;
+    
+    @Column(nullable = false)
+<span class="pc" id="L36">    private LocalDateTime dateTransaction = LocalDateTime.now();</span>
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+<span class="pc" id="L40">    private StatutTransaction statut = StatutTransaction.EN_ATTENTE;</span>
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;compte_source_id&quot;)
+    @JsonIgnoreProperties({&quot;transactionsSource&quot;, &quot;transactionsDestination&quot;, &quot;hibernateLazyInitializer&quot;, &quot;handler&quot;})
+    private Account compteSource;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;compte_destination_id&quot;)
+    @JsonIgnoreProperties({&quot;transactionsSource&quot;, &quot;transactionsDestination&quot;, &quot;hibernateLazyInitializer&quot;, &quot;handler&quot;})
+    private Account compteDestination;
+    
+<span class="fc" id="L52">    public enum TypeTransaction {</span>
+<span class="fc" id="L53">        DEPOT, RETRAIT, VIREMENT</span>
+    }
+    
+<span class="fc" id="L56">    public enum StatutTransaction {</span>
+<span class="fc" id="L57">        EN_ATTENTE, EFFECTUEE, ECHOUEE</span>
+    }
+    
+<span class="fc" id="L60">    public Transaction() {}</span>
+    
+<span class="nc" id="L62">    public Transaction(String reference, BigDecimal montant, TypeTransaction typeTransaction, String description) {</span>
+<span class="nc" id="L63">        this.reference = reference;</span>
+<span class="nc" id="L64">        this.montant = montant;</span>
+<span class="nc" id="L65">        this.typeTransaction = typeTransaction;</span>
+<span class="nc" id="L66">        this.description = description;</span>
+<span class="nc" id="L67">    }</span>
+    
+<span class="nc" id="L69">    public Long getId() { return id; }</span>
+<span class="fc" id="L70">    public void setId(Long id) { this.id = id; }</span>
+    
+<span class="nc" id="L72">    public String getReference() { return reference; }</span>
+<span class="fc" id="L73">    public void setReference(String reference) { this.reference = reference; }</span>
+    
+<span class="nc" id="L75">    public BigDecimal getMontant() { return montant; }</span>
+<span class="fc" id="L76">    public void setMontant(BigDecimal montant) { this.montant = montant; }</span>
+    
+<span class="fc" id="L78">    public TypeTransaction getTypeTransaction() { return typeTransaction; }</span>
+<span class="fc" id="L79">    public void setTypeTransaction(TypeTransaction typeTransaction) { this.typeTransaction = typeTransaction; }</span>
+    
+<span class="nc" id="L81">    public String getDescription() { return description; }</span>
+<span class="fc" id="L82">    public void setDescription(String description) { this.description = description; }</span>
+    
+<span class="nc" id="L84">    public LocalDateTime getDateTransaction() { return dateTransaction; }</span>
+<span class="nc" id="L85">    public void setDateTransaction(LocalDateTime dateTransaction) { this.dateTransaction = dateTransaction; }</span>
+    
+<span class="nc" id="L87">    public StatutTransaction getStatut() { return statut; }</span>
+<span class="fc" id="L88">    public void setStatut(StatutTransaction statut) { this.statut = statut; }</span>
+    
+<span class="nc" id="L90">    public Account getCompteSource() { return compteSource; }</span>
+<span class="fc" id="L91">    public void setCompteSource(Account compteSource) { this.compteSource = compteSource; }</span>
+    
+<span class="nc" id="L93">    public Account getCompteDestination() { return compteDestination; }</span>
+<span class="nc" id="L94">    public void setCompteDestination(Account compteDestination) { this.compteDestination = compteDestination; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

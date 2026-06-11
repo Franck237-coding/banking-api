@@ -18,9 +18,11 @@ public class UserDTO {
     @NotBlank(message = "L'email est obligatoire")
     private String email;
     
-    @NotBlank(message = "Le téléphone est obligatoire")
+@NotBlank(message = "Le téléphone est obligatoire")
     private String telephone;
-    
+
+    private Long bankId;
+
     public UserDTO() {}
     
     public UserDTO(String nom, String prenom, String email, String telephone) {
@@ -42,4 +44,7 @@ public class UserDTO {
     
     public String getTelephone() { return telephone; }
     public void setTelephone(String telephone) { this.telephone = telephone; }
+
+    public Long getBankId() { return bankId; }
+    public void setBankId(Long bankId) { this.bankId = bankId; }
 }

@@ -3,7 +3,9 @@ package com.banking;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.banking.model.Bank;
 import com.banking.model.User;
+import com.banking.repository.BankRepository;
 import com.banking.repository.UserRepository;
 import com.banking.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,22 +27,30 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private BankRepository bankRepository;
+
     private User testUser;
+    private Bank testBank;
 
     @BeforeEach
     void setUp() {
+        testBank = new Bank();
+        testBank.setId(1L);
+        testBank.setNom("Banque Nationale");
+        testBank.setCode("BNK001");
+
         testUser = new User();
         testUser.setId(1L);
         testUser.setNom("Dupont");
         testUser.setPrenom("Jean");
         testUser.setEmail("jean@test.com");
         testUser.setTelephone("0612345678");
+        testUser.setBank(testBank);
     }
 
-    // ─── Tests creation utilisateur (partitionnement classes equivalence) ───
-
     @Test
-    @DisplayName("TC-01: Creer utilisateur valide")
+    @DisplayName("TC-01: Creer utilisateur valide avec banque")
     void testCreerUtilisateurValide() {
         when(userRepository.existsByEmail("jean@test.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
@@ -56,8 +66,6 @@ class UserServiceTest {
         assertThrows(RuntimeException.class, () -> userService.createUser(testUser));
     }
 
-    // ─── Tests recherche utilisateur (valeurs limites) ───
-
     @Test
     @DisplayName("TC-03: Utilisateur trouve par ID")
     void testUtilisateurTrouve() {
@@ -67,14 +75,12 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("TC-04: Utilisateur non trouve (ID invalide)")
+    @DisplayName("TC-04: Utilisateur non trouve")
     void testUtilisateurNonTrouve() {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
         Optional<User> result = userService.getUserById(999L);
         assertFalse(result.isPresent());
     }
-
-    // ─── Tests modification utilisateur ───
 
     @Test
     @DisplayName("TC-05: Modifier utilisateur existant")
@@ -93,8 +99,6 @@ class UserServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
         assertThrows(RuntimeException.class, () -> userService.updateUser(999L, testUser));
     }
-
-    // ─── Tests suppression utilisateur ───
 
     @Test
     @DisplayName("TC-07: Supprimer utilisateur existant")

@@ -18,16 +18,19 @@ public class AccountDTO {
     @NotNull(message = "L'ID utilisateur est obligatoire")
     private Long userId;
     
+    @NotNull(message = "L'ID banque est obligatoire")
+    private Long bankId;
+    
     public AccountDTO() {}
     
-    public AccountDTO(String numeroCompte, BigDecimal solde, String typeCompte, Long userId) {
+    public AccountDTO(String numeroCompte, BigDecimal solde, String typeCompte, Long userId, Long bankId) {
         this.numeroCompte = numeroCompte;
         this.solde = solde;
         this.typeCompte = typeCompte;
         this.userId = userId;
+        this.bankId = bankId;
     }
     
-    // Getters and Setters
     public String getNumeroCompte() { return numeroCompte; }
     public void setNumeroCompte(String numeroCompte) { this.numeroCompte = numeroCompte; }
     
@@ -39,4 +42,7 @@ public class AccountDTO {
     
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
+    
+    public Long getBankId() { return bankId; }
+    public void setBankId(Long bankId) { this.bankId = bankId; }
 }

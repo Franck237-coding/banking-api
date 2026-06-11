@@ -36,6 +36,11 @@ public class Account {
     @JsonIgnoreProperties({"accounts", "hibernateLazyInitializer", "handler"})
     private User user;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_id", nullable = false)
+    @JsonIgnoreProperties({"users", "hibernateLazyInitializer", "handler"})
+    private Bank bank;
+    
     @OneToMany(mappedBy = "compteSource", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transaction> transactionsSource;
     
@@ -70,6 +75,9 @@ public class Account {
     
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+    
+    public Bank getBank() { return bank; }
+    public void setBank(Bank bank) { this.bank = bank; }
     
     public List<Transaction> getTransactionsSource() { return transactionsSource; }
     public void setTransactionsSource(List<Transaction> transactionsSource) { this.transactionsSource = transactionsSource; }
