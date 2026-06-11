@@ -1,37 +1,18 @@
 services:
   - type: web
     name: banking-api
-    env: java
+    env: docker
     plan: free
 
     buildCommand: "mvn clean package -DskipTests"
-    startCommand: "java -jar target/banking-api-0.0.1-SNAPSHOT.jar"
-
-    healthCheckPath: /
+    startCommand: "java -jar app.jar"
 
     envVars:
-      - key: JAVA_VERSION
-        value: 17
-
-      - key: SPRING_PROFILES_ACTIVE
-        value: neon
-
       - key: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://ep-nameless-base-alnzwruy-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require
 
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: banking-db
-          property: user
+        value: neondb_owner
 
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: banking-db
-          property: password
-
-  - type: postgres
-    name: banking-db
-    plan: free
-    ipAllowList: []
-    databaseName: banking_db
-    user: banking_user
+        value: npg_QHu2joOR8WJi
